@@ -198,8 +198,8 @@ function Usercreate() {
                   "border-red-500"
                 }`}
               />
-              {myFormik.touched["email"] && myFormik.errors.email ? (
-                <span className="text-red-500">{myFormik.errors.email}</span>
+              {myFormik.touched["doj"] && myFormik.errors.doj ? (
+                <span className="text-red-500">{myFormik.errors.doj}</span>
               ) : null}
             </div>
           </div>
