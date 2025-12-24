@@ -4,10 +4,30 @@ import Chart from "./Chart";
 import axios from "axios";
 
 function Dashboard() {
-
-
   const [dougnutdata, setDougnutdata] = useState({});
   const [lineData, setLineData] = useState({});
+  const [lineOptions, setLineOptions] = useState({
+    responsive: true,
+    scales: {
+      y: {
+        min: 0,
+        max: 3,
+        ticks: {
+          stepSize: 1,
+        },
+        title: {
+          display: true,
+          text: "Number of Users",
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Months",
+        },
+      },
+    },
+  });
 
   const allMonths = [
     "Jan",
@@ -22,7 +42,7 @@ function Dashboard() {
     "Oct",
     "Nov",
     "Dec",
-  ]
+  ];
 
   const monthMap = {
     "01": "Jan",
@@ -38,29 +58,6 @@ function Dashboard() {
     11: "Nov",
     12: "Dec",
   };
-
-  const lineOptions = {
-    responsive: true,
-    scales : {
-      y: {
-        min : 0,
-        max : 3,
-        ticks : {
-          stepSize : 1
-        },
-        title : {
-          display : true,
-          text : "Number of Users"
-        },
-      },
-      x: {
-        title : {
-          display : true,
-          text : "Months"
-        },
-      }
-    }
-  }
 
   const manipulate = (stats) => {
     const categoryCount = stats.reduce((acc, user) => {
@@ -101,21 +98,34 @@ function Dashboard() {
       return acc;
     }, {});
 
-    const dataValues = allMonths.map(month => userByMonth[month] || 0)
+    const dataValues = allMonths.map((month) => userByMonth[month] || 0);
+
+    const maxusers = Math.max(...Object.values(userByMonth));
 
     setLineData({
-      labels: Object.keys(dataValues),
+      labels: allMonths,
       datasets: [
         {
           label: "Users Joined Over Months",
           data: Object.values(dataValues),
           borderColor: "rgb(53, 162, 235)",
           backgroundColor: "rgba(53, 162, 235, 0.5)",
-          tension : 0.3,
-          fill :true
+          tension: 0.3,
+          fill: true,
         },
       ],
     });
+
+    setLineOptions((prev) => ({
+      ...prev,
+      scales: {
+        ...prev.scales,
+        y: {
+          ...prev.scales.y,
+          max: maxusers + 1,
+        },
+      },
+    }));
     console.log(categoryCount);
     console.log(userByMonth);
   };
