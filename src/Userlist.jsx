@@ -1,13 +1,16 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { useDispatch, useSelector } from "react-redux";
+import { setUsers } from "./userSlice";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function Userlist() {
-  const [users, setUsers] = useState(null);
-  
+  // const [users, setUsers] = useState(null);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.users);
 
   const getUsers = async () => {
     try {
@@ -15,13 +18,16 @@ function Userlist() {
       const user = await axios.get(
         "https://6461c1c2491f9402f4aa0565.mockapi.io/users"
       );
-      setUsers(user.data);
+      dispatch(setUsers(user.data));
+      console.log(users);
     } catch (error) {
       alert(error);
     }
   };
   useEffect(() => {
-    getUsers();
+    if (users.length === 0) {
+      getUsers();
+    }
   }, []);
 
   const handleDelete = async (id) => {
